@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -27,7 +28,7 @@ import static cz.pazdera.school.dbs.DBS_Hotel.config.GlobalVariables.*;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private static final Logger log = LogManager.getLogger(JWTAuthenticationFilter.class);
+    private static final Logger console = LogManager.getLogger(JWTAuthenticationFilter.class);
 
     private final AuthenticationManager authenticationManager;
 
@@ -51,7 +52,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             creds.getPassword(),
                             new ArrayList<>())
             );
-        } catch (IOException e) {
+        } catch (IOException | InternalAuthenticationServiceException e) {
             throw new RuntimeException(e);
         }
     }
@@ -63,7 +64,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-//        var details = customerService.findByUsername(((LoginDto)auth.getPrincipal()).getUsername());
         String token = JWT.create()
                 .withSubject(((LoginDto) auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

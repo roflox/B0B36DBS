@@ -1,5 +1,6 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,14 +17,16 @@ public abstract class AbstractModel implements Serializable {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
 
     @CreationTimestamp
     @Column(name = "created")
+    @JsonIgnore
     private LocalDateTime createDateTime;
 
     @UpdateTimestamp
     @Column(name = "updated")
+    @JsonIgnore
     private LocalDateTime updateDateTime;
 
     public LocalDateTime getCreateDateTime() {
@@ -42,11 +45,11 @@ public abstract class AbstractModel implements Serializable {
         this.updateDateTime = updateDateTime;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         Objects.requireNonNull(id);
         this.id = id;
     }

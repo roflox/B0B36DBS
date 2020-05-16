@@ -1,7 +1,9 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservation")
@@ -15,15 +17,28 @@ public class Reservation extends AbstractModel {
     @JoinColumn(name = "promo_id")
     private PromoCode promoCode;
 
-    @ManyToOne()
+    @ManyToOne(optional = false)
     private Room room;
 
     @Basic(optional = false)
-    private LocalDateTime startDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate;
 
     @Basic(optional = false)
     @Column(nullable = false)
-    private Integer duration;
+    private int duration;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    private int numberOfPersons;
+
+    @Basic()
+    @Column()
+    private String feedback;
+
+
+    @Column(columnDefinition = "BOOL not null default false")
+    private boolean paid;
 
     public Customer getCustomer() {
         return customer;
@@ -49,11 +64,11 @@ public class Reservation extends AbstractModel {
         this.room = room;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
@@ -63,5 +78,29 @@ public class Reservation extends AbstractModel {
 
     public void setDuration(Integer duration) {
         this.duration = duration;
+    }
+
+    public Integer getNumberOfPersons() {
+        return numberOfPersons;
+    }
+
+    public void setNumberOfPersons(Integer numberOfPersons) {
+        this.numberOfPersons = numberOfPersons;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 }

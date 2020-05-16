@@ -24,13 +24,6 @@ public class CustomerDetails extends AbstractModel {
     @JsonIgnore
     private String password;
 
-    public CustomerDetails() {}
-
-    public CustomerDetails(RegisterDto dto){
-        this.password = dto.password;
-        this.username = dto.username;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }

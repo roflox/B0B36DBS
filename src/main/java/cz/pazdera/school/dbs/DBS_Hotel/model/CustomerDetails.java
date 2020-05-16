@@ -12,25 +12,23 @@ public class CustomerDetails extends AbstractModel {
     @Basic(optional = false)
     @Column(nullable = false,unique = true)
     @Email
-    private String email;
+    private String username;
 
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnore
     private Customer customer;
 
-    @JsonIgnore
+
     @Basic(optional = false)
+    @JsonIgnore
     private String password;
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public Customer getCustomer() {
@@ -40,4 +38,14 @@ public class CustomerDetails extends AbstractModel {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
 }

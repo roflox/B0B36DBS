@@ -9,6 +9,7 @@ import java.util.Objects;
 @Table(name = "customer")
 public class Customer extends AbstractModel {
 
+
     @OneToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER,mappedBy = "customer")
     private CustomerDetails customerDetails;
 

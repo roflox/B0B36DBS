@@ -34,7 +34,7 @@ public class CustomerService implements UserDetailsService {
     @Transactional
     public void persist(CustomerDetails details) {
         Objects.requireNonNull(details);
-        if(this.detailsDao.findByEmail(details.getUsername())!=null){
+        if(this.detailsDao.findByUsername(details.getUsername())!=null){
             //todo
             return;
         }
@@ -49,8 +49,16 @@ public class CustomerService implements UserDetailsService {
         return customerDao.findAll();
     }
 
+    public CustomerDetails findById(Integer integer){
+        return null;
+    }
+
+    public CustomerDetails findByUsername(String username){
+        return this.detailsDao.findByUsername(username);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return new LoginDto(this.detailsDao.findByEmail(username));
+        return new LoginDto(this.detailsDao.findByUsername(username));
     }
 }

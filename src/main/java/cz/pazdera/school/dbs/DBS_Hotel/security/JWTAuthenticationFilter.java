@@ -3,11 +3,10 @@ package cz.pazdera.school.dbs.DBS_Hotel.security;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.LoginDto;
-import cz.pazdera.school.dbs.DBS_Hotel.model.Customer;
-import cz.pazdera.school.dbs.DBS_Hotel.model.CustomerDetails;
-import org.apache.juli.logging.Log;
+import cz.pazdera.school.dbs.DBS_Hotel.service.CustomerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +31,9 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
+    @Autowired
+    private CustomerService customerService;
+
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -54,11 +56,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
+
+
     @Override
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+//        var details = customerService.findByUsername(((LoginDto)auth.getPrincipal()).getUsername());
         String token = JWT.create()
                 .withSubject(((LoginDto) auth.getPrincipal()).getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

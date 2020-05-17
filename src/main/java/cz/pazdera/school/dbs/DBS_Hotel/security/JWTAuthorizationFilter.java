@@ -23,15 +23,12 @@ import org.apache.logging.log4j.Logger;
 import static cz.pazdera.school.dbs.DBS_Hotel.config.GlobalVariables.*;
 
 
-
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LogManager.getLogger(JWTAuthorizationFilter.class);
-    private final UserService userService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager, UserService userService) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
-        this.userService = userService;
     }
 
     @Override
@@ -43,15 +40,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             chain.doFilter(req, res);
             return;
         }
-
         UsernamePasswordAuthenticationToken authentication = getAuthentication(req);
-        System.err.println(authentication);
-        System.err.println(SecurityContextHolder.getContext().toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(req, res);
     }
 
-    
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
@@ -63,7 +56,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .getSubject();
             SimpleGrantedAuthority[] roles = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
                     .build()
-                    .verify(token.replace(TOKEN_PREFIX,""))
+                    .verify(token.replace(TOKEN_PREFIX, ""))
                     .getClaims().get("roles").asArray(SimpleGrantedAuthority.class);
             if (user != null) {
                 return new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(roles));

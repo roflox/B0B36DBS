@@ -1,7 +1,8 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
+import cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils.HttpHeadersFactory;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.RegisterDto;
-import cz.pazdera.school.dbs.DBS_Hotel.service.CustomerService;
+import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,17 @@ public class AuthController {
 
     private static final Logger console = LogManager.getLogger(AuthController.class);
 
-    private final CustomerService customerService;
+    private final UserService userService;
 
     @Autowired
-    public AuthController(CustomerService customerService) {
-        this.customerService = customerService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping(value = REGISTER_URL,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> createCustomer(@RequestBody RegisterDto body) {
-        this.customerService.persist(body.getDetails());
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<Void> register(@RequestBody RegisterDto body) {
+        this.userService.persist(body.getDetails());
+        var headers = HttpHeadersFactory.createLocationHeaderInsideApplication("/");
+        return new ResponseEntity<>(headers,HttpStatus.CREATED);
     }
 }

@@ -3,15 +3,15 @@ package cz.pazdera.school.dbs.DBS_Hotel.security;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.LoginDto;
-import cz.pazdera.school.dbs.DBS_Hotel.service.CustomerService;
+import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -19,7 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
@@ -32,25 +32,28 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private CustomerService customerService;
+
+    private UserService userService;
 
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            LoginDto creds = new ObjectMapper()
+            LoginDto dto = new ObjectMapper()
                     .readValue(req.getInputStream(), LoginDto.class);
+            var details = userService.findByUsername(dto.username);
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getUsername(),
-                            creds.getPassword(),
-                            new ArrayList<>())
+                            dto.username,
+                            dto.password,
+                            details.getAuthorities()
+                    )
             );
         } catch (IOException | InternalAuthenticationServiceException e) {
             throw new RuntimeException(e);
@@ -58,16 +61,21 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
 
-
     @Override
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
+        User u = (User) (auth.getPrincipal());
+        String[] roles = new String[u.getAuthorities().size()];
+        for (int i = 0; i < u.getAuthorities().size(); i++) {
+            roles[i] = u.getAuthorities().toArray()[i].toString();
+        }
         String token = JWT.create()
-                .withSubject(((LoginDto) auth.getPrincipal()).getUsername())
+                .withSubject(u.getUsername()).withArrayClaim("roles", roles)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
+        System.err.println(token);
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

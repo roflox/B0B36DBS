@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class Reservation extends AbstractModel {
 
     @ManyToOne(optional = false)
-    private Customer customer;
+    private AppUser appUser;
 
     @ManyToOne(
     )
@@ -40,12 +40,12 @@ public class Reservation extends AbstractModel {
     @Column(columnDefinition = "BOOL not null default false")
     private boolean paid;
 
-    public Customer getCustomer() {
-        return customer;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public PromoCode getPromoCode() {

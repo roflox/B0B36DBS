@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "customer")
-public class Customer extends AbstractModel {
+@Table(name = "app_user")
+public class AppUser extends AbstractModel {
 
 
-    @OneToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER,mappedBy = "customer")
-    private CustomerDetails customerDetails;
+    @OneToOne(cascade = CascadeType.DETACH,fetch = FetchType.EAGER,mappedBy = "appUser")
+    private UserDetails userDetails;
 
     @OneToMany(
-            mappedBy = "customer"
+            mappedBy = "appUser"
     )
     private List<Reservation> reservations;
 
@@ -34,11 +34,11 @@ public class Customer extends AbstractModel {
         this.reservations = reservations;
     }
 
-    public CustomerDetails getCustomerDetails() {
-        return customerDetails;
+    public UserDetails getUserDetails() {
+        return userDetails;
     }
 
-    public void setCustomerDetails(CustomerDetails customerDetails) {
-        this.customerDetails = customerDetails;
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
     }
 }

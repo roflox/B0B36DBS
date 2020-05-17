@@ -1,7 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
-import cz.pazdera.school.dbs.DBS_Hotel.model.CustomerDetails;
-import cz.pazdera.school.dbs.DBS_Hotel.service.CustomerService;
+import cz.pazdera.school.dbs.DBS_Hotel.model.UserDetails;
+import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,21 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/customer")
-public class CustomerController {
+@RequestMapping("/user")
+public class UserController {
 
-    private static final Logger console = LogManager.getLogger(CustomerController.class);
-    private final CustomerService customerService;
+    private static final Logger console = LogManager.getLogger(UserController.class);
+    private final UserService userService;
 
     @Autowired
-    public CustomerController(CustomerService customerService){
-        this.customerService = customerService;
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('Admin')")
-    public CustomerDetails find(Authentication authentication){
-        return customerService.findByUsername(authentication.getName());
+    public UserDetails find(Authentication authentication){
+        return userService.findByUsername(authentication.getName());
     }
 
 }

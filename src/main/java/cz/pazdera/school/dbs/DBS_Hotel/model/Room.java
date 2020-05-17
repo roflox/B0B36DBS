@@ -1,5 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -66,4 +68,6 @@ public class Room extends AbstractModel {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+
 }

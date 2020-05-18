@@ -1,7 +1,8 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
 
-import cz.pazdera.school.dbs.DBS_Hotel.dto.RoomDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.CreateRoomDto;
+import cz.pazdera.school.dbs.DBS_Hotel.model.Room;
 import cz.pazdera.school.dbs.DBS_Hotel.service.RoomService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +27,8 @@ public class RoomController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRoom(@RequestBody RoomDto body) {
-//        System.err.println(authorization.getAuthorities());
-        console.info("works");
+    public Room createRoom(@RequestBody CreateRoomDto body) {
+        return roomService.persist(body);
     }
 
 }

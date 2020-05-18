@@ -68,4 +68,6 @@ public class UserService implements UserDetailsService {
         temp.add(new SimpleGrantedAuthority(details.getRole().toString()));
         return new User(details.getUsername(),details.getPassword(),temp);
     }
+
+
 }

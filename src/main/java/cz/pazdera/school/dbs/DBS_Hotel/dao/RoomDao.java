@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.NoResultException;
 
 @Repository
-public class RoomDao extends AbstractDao {
+public class RoomDao extends AbstractDao<Room> {
     protected RoomDao() {
         super(Room.class);
     }

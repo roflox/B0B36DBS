@@ -27,8 +27,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final Logger log = LogManager.getLogger(JWTAuthorizationFilter.class);
 
-    public JWTAuthorizationFilter(AuthenticationManager authManager) {
+    private final UserService userService;
+
+    public JWTAuthorizationFilter(AuthenticationManager authManager, UserService userService) {
         super(authManager);
+        this.userService = userService;
     }
 
     @Override
@@ -54,12 +57,14 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .build()
                     .verify(token.replace(TOKEN_PREFIX, ""))
                     .getSubject();
-            SimpleGrantedAuthority[] roles = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getClaims().get("roles").asArray(SimpleGrantedAuthority.class);
+            var roles = this.userService.findByUsername(user).getAuthorities();
+
+//            SimpleGrantedAuthority[] roles = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+//                    .build()
+//                    .verify(token.replace(TOKEN_PREFIX, ""))
+//                    .getClaims().get("roles").asArray(SimpleGrantedAuthority.class);
             if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(roles));
+                return new UsernamePasswordAuthenticationToken(user, null, roles);
             }
             return null;
         }

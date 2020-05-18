@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
@@ -67,15 +66,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
         User u = (User) (auth.getPrincipal());
-        String[] roles = new String[u.getAuthorities().size()];
-        for (int i = 0; i < u.getAuthorities().size(); i++) {
-            roles[i] = u.getAuthorities().toArray()[i].toString();
-        }
+//        String[] roles = new String[u.getAuthorities().size()];
+//        for (int i = 0; i < u.getAuthorities().size(); i++) {
+//            roles[i] = u.getAuthorities().toArray()[i].toString();
+//        }
         String token = JWT.create()
-                .withSubject(u.getUsername()).withArrayClaim("roles", roles)
+                .withSubject(u.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
-        System.err.println(token);
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 }

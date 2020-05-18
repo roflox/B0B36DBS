@@ -4,7 +4,7 @@ import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ReservationDao extends AbstractDao{
+public class ReservationDao extends AbstractDao<Reservation>{
     protected ReservationDao() {
         super(Reservation.class);
     }

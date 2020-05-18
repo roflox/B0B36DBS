@@ -4,12 +4,8 @@ import cz.pazdera.school.dbs.DBS_Hotel.model.PromoCode;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PromoDao extends AbstractDao{
+public class PromoDao extends AbstractDao<PromoCode>{
     protected PromoDao() {
         super(PromoCode.class);
-    }
-
-    public PromoCode find(Integer id) {
-        return (PromoCode) super.find(id);
     }
 }

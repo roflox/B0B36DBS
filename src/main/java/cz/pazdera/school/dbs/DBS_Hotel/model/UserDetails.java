@@ -14,7 +14,7 @@ public class UserDetails extends AbstractModel {
     @Column(nullable = false,unique = true)
     private String username;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonIgnore
     private AppUser appUser;
 

@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         return userDao.findAll();
     }
 
-    public UserDetails findById(Integer integer){
+    public User findById(Integer integer){
         return null;
     }
 

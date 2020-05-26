@@ -25,7 +25,7 @@ public class UserDetailsDao extends AbstractDao<UserDetails> {
 
     public UserDetails findByCustomerId(Integer id){
         try {
-            return this.em.createQuery("SELECT details FROM UserDetails details WHERE details.customer.id = :id", UserDetails.class)
+            return this.em.createQuery("SELECT details FROM UserDetails details WHERE details.appUser.id = :id", UserDetails.class)
                     .setParameter("id",id)
                     .getSingleResult();
         }catch (NoResultException e){

@@ -47,8 +47,8 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorInfo> nullPointer(HttpServletRequest request, NullPointerException e) {
-        logException(e);
-        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.INTERNAL_SERVER_ERROR);
+//        logException(e);
+        return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

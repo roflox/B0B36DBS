@@ -1,5 +1,6 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Room extends AbstractModel {
     @OneToMany(
             mappedBy = "room"
     )
+    @JsonIgnore
     private List<Reservation> reservations;
 
     public void addReservation(Reservation reservation) {

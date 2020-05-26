@@ -1,6 +1,8 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -10,6 +12,7 @@ import java.time.LocalDate;
 public class Reservation extends AbstractModel {
 
     @ManyToOne(optional = false)
+    @JsonIgnore
     private AppUser appUser;
 
     @ManyToOne(

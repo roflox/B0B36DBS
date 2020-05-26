@@ -1,5 +1,6 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
+import cz.pazdera.school.dbs.DBS_Hotel.model.AppUser;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserDetails;
 import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDetails find(Authentication authentication){
-        return userService.findByUsername(authentication.getName());
+    public AppUser find(Authentication authentication){
+        return userService.findByUsername(authentication.getName()).getAppUser();
     }
 
 }

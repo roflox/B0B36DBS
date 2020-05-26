@@ -1,5 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class PromoCode extends AbstractModel{
     @OneToMany(
             mappedBy = "promoCode"
     )
+    @JsonIgnore
     private List<Reservation> reservations;
 
 

@@ -61,6 +61,7 @@ public class ReservationService {
         reservation.setDuration(dto.duration);
         reservation.setAppUser(userDao.getCustomerByUsername(auth.getName()));
         reservation.setStartDate(dto.startDate);
+        reservation.setRoom(room);
         reservationDao.persist(reservation);
         return reservation;
     }

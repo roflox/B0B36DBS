@@ -17,7 +17,7 @@ public class UserDao extends AbstractDao<AppUser> {
             return em
                     .createQuery("SELECT c FROM AppUser c " +
                             "JOIN UserDetails d " +
-                            "ON c.id = d.customer.id " +
+                            "ON c.id = d.appUser.id " +
                             "WHERE d.username = :username", AppUser.class)
                     .setParameter("username", username).getSingleResult();
         } catch (NoResultException e) {

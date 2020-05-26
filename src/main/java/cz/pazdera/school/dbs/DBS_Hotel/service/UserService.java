@@ -4,6 +4,7 @@ import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDetailsDao;
 import cz.pazdera.school.dbs.DBS_Hotel.model.AppUser;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserDetails;
+import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

@@ -1,5 +1,8 @@
 package cz.pazdera.school.dbs.DBS_Hotel.security;
 
+import cz.pazdera.school.dbs.DBS_Hotel.model.AppUser;
+import cz.pazdera.school.dbs.DBS_Hotel.model.UserDetails;
+import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +47,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+        var admin = new UserDetails();
+        admin.setUsername("admin");
+        admin.setPassword("admin");
+        admin.setRole(UserRole.ADMIN);
+        userService.persist(admin);
+//        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
     }
+
+
 
 
     @Bean

@@ -21,7 +21,7 @@ public class Room extends AbstractModel {
     private Integer capacity;
 
     @Basic()
-    @Column(length = 8, precision = 2)
+    @Column(precision  = 8, scale = 2)
     private BigDecimal price;
 
     @OneToMany(

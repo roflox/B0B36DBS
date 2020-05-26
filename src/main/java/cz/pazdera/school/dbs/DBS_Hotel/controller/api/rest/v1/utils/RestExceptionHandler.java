@@ -60,6 +60,7 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorInfo> accessDenied(HttpServletRequest request, AccessDeniedException e){
 //        e.printStackTrace();
         return new ResponseEntity<>(errorInfo(request,"Access denied"),HttpStatus.FORBIDDEN);
+//        return null;
     }
 
 }

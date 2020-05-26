@@ -2,11 +2,14 @@ package cz.pazdera.school.dbs.DBS_Hotel.service;
 
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.CreateRoomDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.UpdateRoomDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Room;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 
 @Service
@@ -24,4 +27,42 @@ public class RoomService {
         this.roomDao.persist(body.getRoom());
         return roomDao.findByNumber(body.number);
     }
+
+    @Transactional
+    public void delete(Integer number) throws NotFoundException {
+        Objects.requireNonNull(number);
+        var tmp = roomDao.findByNumber(number);
+        if(tmp==null){
+            throw new NotFoundException("Room with number "+number+" was not found");
+        }
+        this.roomDao.remove(tmp);
+    }
+
+    public Room get(Integer number) throws NotFoundException {
+        var tmp = this.roomDao.findByNumber(number);
+        if(tmp == null){
+            throw new NotFoundException("Room with number "+number+" was not found");
+        }
+        return tmp;
+    }
+
+    @Transactional
+    public Room update(Integer number, UpdateRoomDto body) throws NotFoundException{
+        var tmp = this.roomDao.findByNumber(number);
+        if (body.balcony != null){
+            //todo set balcony
+        }
+        if( body.television!=null){
+            //todo set television
+        }
+        if(body.capacity!=null){
+            tmp.setCapacity(body.capacity);
+        }
+        if(body.price!=null){
+            tmp.setPrice(body.price);
+        }
+        roomDao.update(tmp);
+        return tmp;
+    }
+
 }

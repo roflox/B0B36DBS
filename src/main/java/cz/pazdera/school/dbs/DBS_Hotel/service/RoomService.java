@@ -29,6 +29,12 @@ public class RoomService {
         return roomDao.findAll();
     }
 
+
+    @Transactional
+    public List<Room> getSpecified(Boolean television, Boolean balcony){
+        return roomDao.getSpecified(television,balcony);
+    }
+
     @Transactional
     public Room persist(CreateRoomDto body){
         if(roomDao.findByNumber(body.number)!=null){

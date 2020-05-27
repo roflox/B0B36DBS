@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
         var adminUser = new AppUser();
         var admin = new UserDetails();
         admin.setUsername("admin");
-        admin.setPassword("admin");
+        admin.setPassword(bcrypt.encode("admin"));
         admin.setRole(UserRole.ADMIN);
         admin.setAppUser(adminUser);
         this.detailsDao.persist(admin);

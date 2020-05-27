@@ -1,6 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -10,7 +11,6 @@ public class CreateReservationDto {
     @NotNull
     @Min(1)
     public Integer roomNumber;
-    @NotNull
     public String promoCode;
     @Min(1)
     @NotNull

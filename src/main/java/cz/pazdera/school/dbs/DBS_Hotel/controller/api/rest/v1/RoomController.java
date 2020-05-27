@@ -31,7 +31,7 @@ public class RoomController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,produces  = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Room createRoom(@Valid @RequestBody CreateRoomDto body) {
         return roomService.persist(body);
@@ -45,23 +45,27 @@ public class RoomController {
     }
 
 
-    @GetMapping(value = "/{number}",produces  = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Room getRoom(@PathVariable(value = "number") Integer number) throws NotFoundException {
         return this.roomService.get(number);
     }
 
-    @GetMapping(produces  = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<Room> getAllRooms(){
-        return this.roomService.getAll();
+    public List<Room> getAllRooms(@RequestParam(value = "television",required = false) Boolean television, @RequestParam(value = "balcony",required = false) Boolean balcony) {
+        if (television == null && balcony == null) {
+            return this.roomService.getAll();
+        }else {
+            return this.roomService.getSpecified(television,balcony);
+        }
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,value = "/{number}",produces  = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "/{number}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyAuthority('ADMIN','EMPLOYEE')")
     @ResponseStatus(HttpStatus.OK)
-    public Room updateRoom(@PathVariable(value = "number") Integer number,@Valid @RequestBody UpdateRoomDto body) throws NotFoundException {
-        return this.roomService.update(number,body);
+    public Room updateRoom(@PathVariable(value = "number") Integer number, @Valid @RequestBody UpdateRoomDto body) throws NotFoundException {
+        return this.roomService.update(number, body);
     }
 
 }

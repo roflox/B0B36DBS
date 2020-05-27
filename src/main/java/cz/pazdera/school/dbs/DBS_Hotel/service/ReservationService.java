@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.InsufficientResourcesException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 
 @Service
 public class ReservationService {
@@ -67,6 +68,7 @@ public class ReservationService {
         reservation.setAppUser(userDao.getCustomerByUsername(auth.getName()));
         reservation.setNumberOfPersons(dto.numberOfPersons);
         reservation.setRoom(room);
+        reservation.setDeleted(false);
         reservationDao.persist(reservation);
         return reservation;
     }
@@ -84,6 +86,30 @@ public class ReservationService {
             }
         }
         return tmp;
+    }
+
+    @Transactional
+    public void deleteReservation(Integer id, Authentication auth) throws NotFoundException {
+        var tmp = getReservation(id,auth);
+        tmp.setDeleted(true);
+        reservationDao.update(tmp);
+    }
+
+    @Transactional
+    public void payReservation(Integer id, Authentication auth) throws NotFoundException{
+        var tmp = getReservation(id,auth);
+        tmp.setPaid(true);
+        reservationDao.update(tmp);
+    }
+
+    @Transactional
+    public void sendFeedback(Integer id, Authentication auth, String feedback) throws NotFoundException, InsufficientResourcesException {
+        var tmp = getReservation(id,auth);
+        if(tmp.getEndDate().isAfter(LocalDate.now())){
+            throw new InsufficientResourcesException("You cannot send feedback before you check-out");
+        }
+        tmp.setFeedback(feedback);
+        reservationDao.update(tmp);
     }
 
 }

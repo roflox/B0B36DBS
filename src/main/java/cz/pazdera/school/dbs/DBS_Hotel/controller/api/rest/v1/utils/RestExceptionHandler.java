@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -87,6 +88,11 @@ public class RestExceptionHandler {
     @ExceptionHandler(InsufficientResourcesException.class)
     public ResponseEntity<ErrorInfo> unexpectedType(HttpServletRequest request, InsufficientResourcesException e){
         return new ResponseEntity<>(errorInfo(request,e.getMessage()),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorInfo> notSupportedMethod(HttpServletRequest request, HttpRequestMethodNotSupportedException e){
+        return new ResponseEntity<>(errorInfo(request,e.getMessage()),HttpStatus.METHOD_NOT_ALLOWED);
     }
 
 }

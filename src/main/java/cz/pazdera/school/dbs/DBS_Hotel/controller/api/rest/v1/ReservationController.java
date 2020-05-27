@@ -1,5 +1,6 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
+import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateFeedbackDto;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import cz.pazdera.school.dbs.DBS_Hotel.service.ReservationService;
@@ -33,14 +34,30 @@ public class ReservationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN','USER','EMPLOYEE')")
     public Reservation createReservation(@Valid @RequestBody CreateReservationDto body, Authentication authorization) throws NotFoundException, InsufficientResourcesException {
-        return this.service.createReservation(body,authorization);
+        return this.service.createReservation(body, authorization);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE,value = "/{id}")
-    public Reservation getReservation(Authentication authentication,@PathVariable(value = "id") Integer id) throws NotFoundException {
-        return this.service.getReservation(id,authentication);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, value = "/{id}")
+    public Reservation getReservation(Authentication authentication, @PathVariable(value = "id") Integer id) throws NotFoundException {
+        return this.service.getReservation(id, authentication);
     }
 
-//    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteReservation(Authentication authentication, @PathVariable(value = "id") Integer id) throws NotFoundException {
+        this.service.deleteReservation(id, authentication);
+    }
+
+    @PutMapping(value = "/{id}/pay")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void payReservation(Authentication authentication, @PathVariable(value = "id") Integer id) throws NotFoundException {
+        this.service.payReservation(id, authentication);
+    }
+
+    @PostMapping(value = "/{id}/feedback")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void sendFeedback(Authentication authentication, @PathVariable(value = "id") Integer id, @Valid @RequestBody CreateFeedbackDto body) throws NotFoundException, InsufficientResourcesException {
+        this.service.sendFeedback(id, authentication, body.feedback);
+    }
 
 }

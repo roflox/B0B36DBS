@@ -55,6 +55,11 @@ public class Reservation extends AbstractModel {
         return price;
     }
 
+    @Basic()
+    @JsonIgnore()
+    @Column(columnDefinition = "BOOL not null DEFAULT false")
+    private Boolean deleted;
+
 
     @Column(columnDefinition = "BOOL not null default false")
     private boolean paid;
@@ -69,10 +74,6 @@ public class Reservation extends AbstractModel {
 
     public void setNumberOfPersons(int numberOfPersons) {
         this.numberOfPersons = numberOfPersons;
-    }
-
-    public boolean isOverlapping(Reservation reservation){
-        return reservation.startDate.isBefore(this.endDate) && reservation.endDate.isAfter(this.startDate);
     }
 
     public AppUser getAppUser() {
@@ -129,6 +130,14 @@ public class Reservation extends AbstractModel {
 
     public void setPaid(boolean paid) {
         this.paid = paid;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

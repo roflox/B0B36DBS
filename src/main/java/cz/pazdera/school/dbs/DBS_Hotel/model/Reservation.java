@@ -32,8 +32,8 @@ public class Reservation extends AbstractModel {
     private LocalDate startDate;
 
     @Basic(optional = false)
-    @Column(nullable = false)
-    private int duration;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate;
 
     @Basic(optional = false)
     @Column(nullable = false)
@@ -55,8 +55,25 @@ public class Reservation extends AbstractModel {
         return price;
     }
 
+
     @Column(columnDefinition = "BOOL not null default false")
     private boolean paid;
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setNumberOfPersons(int numberOfPersons) {
+        this.numberOfPersons = numberOfPersons;
+    }
+
+    public boolean isOverlapping(Reservation reservation){
+        return reservation.startDate.isBefore(this.endDate) && reservation.endDate.isAfter(this.startDate);
+    }
 
     public AppUser getAppUser() {
         return appUser;
@@ -88,14 +105,6 @@ public class Reservation extends AbstractModel {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
     }
 
     public Integer getNumberOfPersons() {

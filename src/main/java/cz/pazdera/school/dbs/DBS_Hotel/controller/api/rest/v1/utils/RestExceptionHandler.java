@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.naming.InsufficientResourcesException;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServlet;
@@ -81,6 +82,11 @@ public class RestExceptionHandler {
     public ResponseEntity<ErrorInfo> unexpectedType(HttpServletRequest request, UnexpectedTypeException e){
         e.printStackTrace();
         return new ResponseEntity<>(errorInfo(request,"unexpectedType"),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InsufficientResourcesException.class)
+    public ResponseEntity<ErrorInfo> unexpectedType(HttpServletRequest request, InsufficientResourcesException e){
+        return new ResponseEntity<>(errorInfo(request,e.getMessage()),HttpStatus.BAD_REQUEST);
     }
 
 }

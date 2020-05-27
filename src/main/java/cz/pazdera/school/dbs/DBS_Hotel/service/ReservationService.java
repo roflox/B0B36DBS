@@ -1,9 +1,9 @@
 package cz.pazdera.school.dbs.DBS_Hotel.service;
 
-import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.PromoDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.ReservationDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
+import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
@@ -14,11 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import javax.naming.InsufficientResourcesException;
 import javax.transaction.Transactional;
-import java.util.Objects;
-
-import static cz.pazdera.school.dbs.DBS_Hotel.config.GlobalVariables.NOT_SPECIFIED;
-import static java.lang.String.format;
 
 @Service
 public class ReservationService {
@@ -40,12 +37,14 @@ public class ReservationService {
 
 
     @Transactional
-    public Reservation createReservation(CreateReservationDto dto, Authentication auth) throws NotFoundException {
+    public Reservation createReservation(CreateReservationDto dto, Authentication auth) throws NotFoundException, InsufficientResourcesException {
         var reservation = new Reservation();
         var room = roomDao.findByNumber(dto.roomNumber);
         if (room == null) {
             throw new NotFoundException("Room not found");
         }
+        var reservations = reservationDao.getAllActiveReservationsForRoom(room.getId());
+        //todo check if room is empty
         if (dto.promoCode != null) {
             if(dto.promoCode.length()!=0) {
                 var promo = promoDao.findByCode(dto.promoCode);
@@ -55,8 +54,16 @@ public class ReservationService {
                 reservation.setPromoCode(promo);
             }
         }
+        if(room.getCapacity()<dto.numberOfPersons){
+            throw new InsufficientResourcesException("Room does not have big enough capacity");
+        }
         reservation.setNumberOfPersons(dto.numberOfPersons);
-        reservation.setDuration(dto.duration);
+        reservation.setEndDate(dto.startDate.plusDays(dto.duration));
+        for(Reservation res: reservations){
+            if(res.isOverlapping(reservation)){
+                throw new InsufficientResourcesException("Room is already reserved in this time period");
+            }
+        }
         reservation.setAppUser(userDao.getCustomerByUsername(auth.getName()));
         reservation.setStartDate(dto.startDate);
         reservation.setRoom(room);

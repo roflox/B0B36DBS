@@ -11,6 +11,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +62,11 @@ public class RestExceptionHandler {
 //        e.printStackTrace();
         return new ResponseEntity<>(errorInfo(request,"Access denied"),HttpStatus.FORBIDDEN);
 //        return null;
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<ErrorInfo> entityExists(HttpServletRequest request, EntityExistsException e){
+        return new ResponseEntity<>(errorInfo(request,e),HttpStatus.BAD_REQUEST);
     }
 
 }

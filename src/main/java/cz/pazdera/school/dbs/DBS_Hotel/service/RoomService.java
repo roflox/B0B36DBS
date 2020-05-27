@@ -1,14 +1,16 @@
 package cz.pazdera.school.dbs.DBS_Hotel.service;
 
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.CreateRoomDto;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.UpdateRoomDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.room.CreateRoomDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.room.UpdateRoomDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Room;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -23,8 +25,16 @@ public class RoomService {
     }
 
     @Transactional
+    public List<Room> getAll(){
+        return roomDao.findAll();
+    }
+
+    @Transactional
     public Room persist(CreateRoomDto body){
-        this.roomDao.persist(body.getRoom());
+        if(roomDao.findByNumber(body.number)!=null){
+            throw new EntityExistsException("Room with that number already exists");
+        }
+        roomDao.persist(body.getRoom());
         return roomDao.findByNumber(body.number);
     }
 
@@ -49,11 +59,14 @@ public class RoomService {
     @Transactional
     public Room update(Integer number, UpdateRoomDto body) throws NotFoundException{
         var tmp = this.roomDao.findByNumber(number);
+        if(tmp==null){
+            throw new NotFoundException("Room with number "+number+" was not found");
+        }
         if (body.balcony != null){
-            //todo set balcony
+            tmp.setBalcony(body.balcony);
         }
         if( body.television!=null){
-            //todo set television
+            tmp.setTelevision(body.television);
         }
         if(body.capacity!=null){
             tmp.setCapacity(body.capacity);

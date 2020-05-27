@@ -1,7 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
 import cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils.HttpHeadersFactory;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.RegisterDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.auth.RegisterDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +30,9 @@ public class AuthController {
 
     @PostMapping(value = REGISTER_URL,consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> register(@RequestBody RegisterDto body) {
-        this.userService.persist(body.getDetails());
-        body.role = UserRole.USER;
+        var details = body.getDetails();
+        details.setRole(UserRole.USER);
+        this.userService.persist(details);
         var headers = HttpHeadersFactory.createLocationHeaderInsideApplication("/");
         return new ResponseEntity<>(headers,HttpStatus.CREATED);
     }

@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +35,30 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void persist(UserDetails details) {
+    public void persist(UserDetails details) throws EntityExistsException {
         Objects.requireNonNull(details);
         if(this.detailsDao.findByUsername(details.getUsername())!=null){
-            //todo
-            return;
+            throw new EntityExistsException("User with that username already exists");
         }
         AppUser appUser = new AppUser();
         appUser.setUserDetails(details);
         details.setPassword(bcrypt.encode(details.getPassword()));
         details.setAppUser(appUser);
         this.detailsDao.persist(details);
+    }
+
+    @Transactional
+    public void createAdmin(){
+        if(this.detailsDao.findByUsername("admin")!=null){
+            return;
+        }
+        var adminUser = new AppUser();
+        var admin = new UserDetails();
+        admin.setUsername("admin");
+        admin.setPassword("admin");
+        admin.setRole(UserRole.ADMIN);
+        admin.setAppUser(adminUser);
+        this.detailsDao.persist(admin);
     }
 
     public List<AppUser> findAll() {

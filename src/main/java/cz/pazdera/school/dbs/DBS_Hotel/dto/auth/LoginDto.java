@@ -1,4 +1,4 @@
-package cz.pazdera.school.dbs.DBS_Hotel.dto;
+package cz.pazdera.school.dbs.DBS_Hotel.dto.auth;
 
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserDetails;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;

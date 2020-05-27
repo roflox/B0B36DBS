@@ -4,7 +4,7 @@ import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.PromoDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.ReservationDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.CreateReservationDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +50,8 @@ public class ReservationService {
         if(room==null){
             throw new NotFoundException("Room not found");
         }
-        if(dto.promoId!=null){
-            var promo =  promoDao.find(dto.promoId);
+        if(dto.promoCode!=null){
+            var promo =  promoDao.findByCode(dto.promoCode);
             if(promo==null){
                 throw new NotFoundException("Promo not found");
             }

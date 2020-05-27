@@ -47,12 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
-        var admin = new UserDetails();
-        admin.setUsername("admin");
-        admin.setPassword("admin");
-        admin.setRole(UserRole.ADMIN);
-        userService.persist(admin);
-//        auth.inMemoryAuthentication().withUser("admin").password("admin").roles("ADMIN");
+        userService.createAdmin();
     }
 
 

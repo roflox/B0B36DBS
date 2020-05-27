@@ -1,7 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
 import cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils.HttpHeadersFactory;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.CreateReservationDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import cz.pazdera.school.dbs.DBS_Hotel.service.ReservationService;
 import javassist.NotFoundException;
@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/reservation")
@@ -28,7 +30,7 @@ public class ReservationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Reservation createReservation(@RequestBody CreateReservationDto body, Authentication authorization) throws NotFoundException {
+    public Reservation createReservation(@Valid @RequestBody CreateReservationDto body, Authentication authorization) throws NotFoundException {
         var reservation = this.service.createReservation(body,authorization);
         var headers = HttpHeadersFactory.createLocationHeaderInsideApplication("/reservatiom/"+reservation.getId());
         return reservation;

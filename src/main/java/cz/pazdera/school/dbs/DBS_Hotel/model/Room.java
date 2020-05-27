@@ -24,6 +24,14 @@ public class Room extends AbstractModel {
     @Column(precision  = 8, scale = 2)
     private BigDecimal price;
 
+    @Basic
+    @Column
+    private Boolean television;
+
+    @Basic
+    @Column
+    private Boolean balcony;
+
     @OneToMany(
             mappedBy = "room"
     )
@@ -71,5 +79,19 @@ public class Room extends AbstractModel {
         this.price = price;
     }
 
+    public Boolean getTelevision() {
+        return television;
+    }
 
+    public void setTelevision(Boolean television) {
+        this.television = television;
+    }
+
+    public Boolean getBalcony() {
+        return balcony;
+    }
+
+    public void setBalcony(Boolean balcony) {
+        this.balcony = balcony;
+    }
 }

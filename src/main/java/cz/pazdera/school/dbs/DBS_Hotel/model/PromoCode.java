@@ -17,11 +17,21 @@ public class PromoCode extends AbstractModel{
     @Basic()
     private Integer discount;
 
+    @Basic(optional = false)
+    @Column(unique = true,nullable = false)
+    private String name;
+
+    @Basic()
+    @Column(unique = true)
+    private String code;
+
     @OneToMany(
             mappedBy = "promoCode"
     )
     @JsonIgnore
     private List<Reservation> reservations;
+
+
 
 
     public void addReservation(Reservation reservation){
@@ -54,5 +64,21 @@ public class PromoCode extends AbstractModel{
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

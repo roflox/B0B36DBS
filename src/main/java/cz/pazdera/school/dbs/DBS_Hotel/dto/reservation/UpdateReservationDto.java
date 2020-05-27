@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class UpdateReservationDto {
@@ -13,12 +12,10 @@ public class UpdateReservationDto {
     public Integer duration;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @NotNull
     @FutureOrPresent
     public LocalDate startDate;
 
     @Min(1)
-    @NotNull
     public Integer numberOfPersons;
 
     @Override

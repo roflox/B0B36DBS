@@ -21,4 +21,12 @@ public class ReservationDao extends AbstractDao<Reservation>{
             return null;
         }
     }
+
+    public List<Reservation> getReservationsOfUser(Integer id){
+        try{
+            return em.createQuery("SELECT r FROM Reservation r WHERE r.user.id = :id",Reservation.class).setParameter("id",id).getResultList();
+        }catch (NoResultException e){
+            return null;
+        }
+    }
 }

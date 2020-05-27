@@ -5,6 +5,7 @@ import cz.pazdera.school.dbs.DBS_Hotel.dao.ReservationDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.UserDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.UpdateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import javassist.NotFoundException;
@@ -13,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import javax.naming.InsufficientResourcesException;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -38,7 +39,48 @@ public class ReservationService {
 
 
     @Transactional
-    public Reservation createReservation(CreateReservationDto dto, Authentication auth) throws NotFoundException, InsufficientResourcesException {
+    public List<Reservation> getAll(Authentication auth){
+        var user= userDao.getCustomerByUsername(auth.getName());
+        if(user.getUserDetails().getRole()==UserRole.USER) {
+            return reservationDao.getReservationsOfUser(user.getId());
+        }else {
+            return reservationDao.findAll();
+        }
+    }
+
+
+    @Transactional
+    public Reservation update(Integer id, Authentication auth, UpdateReservationDto dto) throws NotFoundException, InsufficientResourcesException {
+        var reservation = get(id,auth);
+        if(dto.startDate!=null){
+            if(dto.duration==null){
+                throw new InsufficientResourcesException("If you want to change startDate you have to specify duration");
+            }
+            reservation.setStartDate(dto.startDate);
+        }
+        if(dto.duration!=null){
+            reservation.setEndDate(reservation.getStartDate().plusDays(dto.duration));
+        }
+        if(dto.numberOfPersons!=null){
+            reservation.setNumberOfPersons(dto.numberOfPersons);
+        }
+        if(reservation.getRoom().getCapacity()<dto.numberOfPersons){
+            throw new InsufficientResourcesException("Room does not have big enough capacity");
+        }
+        var reservations = reservationDao.getOverlapping(reservation.getRoom().getId(),reservation.getEndDate(),reservation.getStartDate());
+        if(!reservations.isEmpty()){
+            for(Reservation r: reservations){
+                if(!reservation.getId().equals(r.getId())){
+                    throw new InsufficientResourcesException("Room is already reserved in this time period");
+                }
+            }
+        }
+        reservationDao.update(reservation);
+        return reservation;
+    }
+
+    @Transactional
+    public Reservation create(CreateReservationDto dto, Authentication auth) throws NotFoundException, InsufficientResourcesException {
         var reservation = new Reservation();
         var room = roomDao.findByNumber(dto.roomNumber);
         if (room == null) {
@@ -74,7 +116,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public Reservation getReservation(Integer id, Authentication auth) throws NotFoundException {
+    public Reservation get(Integer id, Authentication auth) throws NotFoundException {
         var tmp = reservationDao.find(id);
         var user = userDao.getCustomerByUsername(auth.getName());
         if (tmp == null) {
@@ -90,21 +132,21 @@ public class ReservationService {
 
     @Transactional
     public void deleteReservation(Integer id, Authentication auth) throws NotFoundException {
-        var tmp = getReservation(id,auth);
+        var tmp = get(id,auth);
         tmp.setDeleted(true);
         reservationDao.update(tmp);
     }
 
     @Transactional
     public void payReservation(Integer id, Authentication auth) throws NotFoundException{
-        var tmp = getReservation(id,auth);
+        var tmp = get(id,auth);
         tmp.setPaid(true);
         reservationDao.update(tmp);
     }
 
     @Transactional
     public void sendFeedback(Integer id, Authentication auth, String feedback) throws NotFoundException, InsufficientResourcesException {
-        var tmp = getReservation(id,auth);
+        var tmp = get(id,auth);
         if(tmp.getEndDate().isAfter(LocalDate.now())){
             throw new InsufficientResourcesException("You cannot send feedback before you check-out");
         }

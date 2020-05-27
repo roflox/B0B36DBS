@@ -36,11 +36,7 @@ public class PromoService {
 
     @Transactional
     public PromoCode persist(CreatePromoDto body){
-        try {
-            promoDao.persist(body.getPromo());
-        }catch (Exception e){
-            System.err.println("nepovedlo se");
-        }
+        promoDao.persistOrError(body.getPromo());
         return promoDao.findByName(body.name);
     }
 

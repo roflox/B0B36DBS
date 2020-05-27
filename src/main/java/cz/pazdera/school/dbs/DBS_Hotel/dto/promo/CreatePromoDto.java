@@ -4,20 +4,23 @@ import cz.pazdera.school.dbs.DBS_Hotel.model.PromoCode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class CreatePromoDto {
 
-    @NotNull
+    @NotNull(message = "name may not be null")
+    @NotBlank
     @Length(min = 3)
     public String name;
-    @NotNull
+    @NotNull(message = "active may not be null")
     public Boolean active;
-    @NotNull
+    @NotNull(message = "discount may not be null")
     @Min(1)
     public Integer discount;
-    @NotNull
+    @NotNull(message = "code may not be null")
     @Length(min = 3)
+    @NotBlank
     public String code;
 
     public PromoCode getPromo(){

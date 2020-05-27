@@ -130,4 +130,18 @@ public class Reservation extends AbstractModel {
     public void setPaid(boolean paid) {
         this.paid = paid;
     }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "appUser=" + appUser +
+                ", promoCode=" + promoCode +
+                ", room=" + room +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", numberOfPersons=" + numberOfPersons +
+                ", feedback='" + feedback + '\'' +
+                ", paid=" + paid +
+                '}';
+    }
 }

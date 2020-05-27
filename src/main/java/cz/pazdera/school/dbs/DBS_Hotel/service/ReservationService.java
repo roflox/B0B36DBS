@@ -43,7 +43,7 @@ public class ReservationService {
         if (room == null) {
             throw new NotFoundException("Room not found");
         }
-        var reservations = reservationDao.getAllActiveReservationsForRoom(room.getId());
+
         //todo check if room is empty
         if (dto.promoCode != null) {
             if(dto.promoCode.length()!=0) {
@@ -57,15 +57,15 @@ public class ReservationService {
         if(room.getCapacity()<dto.numberOfPersons){
             throw new InsufficientResourcesException("Room does not have big enough capacity");
         }
-        reservation.setNumberOfPersons(dto.numberOfPersons);
+
+        reservation.setStartDate(dto.startDate);
         reservation.setEndDate(dto.startDate.plusDays(dto.duration));
-        for(Reservation res: reservations){
-            if(res.isOverlapping(reservation)){
-                throw new InsufficientResourcesException("Room is already reserved in this time period");
-            }
+        var reservations = reservationDao.getOverlapping(room.getId(),reservation.getEndDate(),reservation.getStartDate());
+        if(!reservations.isEmpty()) {
+            throw new InsufficientResourcesException("Room is already reserved in this time period");
         }
         reservation.setAppUser(userDao.getCustomerByUsername(auth.getName()));
-        reservation.setStartDate(dto.startDate);
+        reservation.setNumberOfPersons(dto.numberOfPersons);
         reservation.setRoom(room);
         reservationDao.persist(reservation);
         return reservation;

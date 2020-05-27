@@ -1,7 +1,7 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1;
 
 import cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils.HttpHeadersFactory;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.auth.RegisterDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.user.RegisterDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;

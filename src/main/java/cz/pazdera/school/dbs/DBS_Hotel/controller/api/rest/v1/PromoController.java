@@ -52,17 +52,20 @@ public class PromoController {
 
     @GetMapping(produces  = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public List<PromoCode> getAllPromos(){
         return this.promoService.getAll();
     }
 
     @GetMapping(produces  = MediaType.APPLICATION_JSON_VALUE,value = "/active")
+    @ResponseStatus(HttpStatus.OK)
     public List<PromoCode> getAllActivePromos(){
         return this.promoService.getAllActive();
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,value = "/{number}",produces  = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public PromoCode updatePromo(@PathVariable(value = "number") Integer number,@Valid@RequestBody UpdatePromoDto body) throws NotFoundException {
         return this.promoService.update(number,body);
     }

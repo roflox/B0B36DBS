@@ -17,7 +17,6 @@ import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -36,7 +35,6 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void persist(UserDetails details) throws EntityExistsException {
-        Objects.requireNonNull(details);
         if(this.detailsDao.findByUsername(details.getUsername())!=null){
             throw new EntityExistsException("User with that username already exists");
         }

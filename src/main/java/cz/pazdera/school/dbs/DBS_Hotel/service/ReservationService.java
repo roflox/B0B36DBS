@@ -6,6 +6,7 @@ import cz.pazdera.school.dbs.DBS_Hotel.dao.ReservationDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dao.RoomDao;
 import cz.pazdera.school.dbs.DBS_Hotel.dto.reservation.CreateReservationDto;
 import cz.pazdera.school.dbs.DBS_Hotel.model.Reservation;
+import cz.pazdera.school.dbs.DBS_Hotel.model.UserRole;
 import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,22 +41,19 @@ public class ReservationService {
 
     @Transactional
     public Reservation createReservation(CreateReservationDto dto, Authentication auth) throws NotFoundException {
-        Objects.requireNonNull(dto);
-        Objects.requireNonNull(dto.duration, format(NOT_SPECIFIED, Reservation.class.getSimpleName(), "duration"));
-        Objects.requireNonNull(dto.numberOfPersons, format(NOT_SPECIFIED, Reservation.class.getSimpleName(), "numberOfPersons"));
-        Objects.requireNonNull(dto.roomNumber, format(NOT_SPECIFIED, Reservation.class.getSimpleName(), "roomNumber"));
-        Objects.requireNonNull(dto.startDate, format(NOT_SPECIFIED, Reservation.class.getSimpleName(), "startDate"));
         var reservation = new Reservation();
         var room = roomDao.findByNumber(dto.roomNumber);
-        if(room==null){
+        if (room == null) {
             throw new NotFoundException("Room not found");
         }
-        if(dto.promoCode!=null){
-            var promo =  promoDao.findByCode(dto.promoCode);
-            if(promo==null){
-                throw new NotFoundException("Promo not found");
+        if (dto.promoCode != null) {
+            if(dto.promoCode.length()!=0) {
+                var promo = promoDao.findByCode(dto.promoCode);
+                if (promo == null) {
+                    throw new NotFoundException("Promo not found");
+                }
+                reservation.setPromoCode(promo);
             }
-            reservation.setPromoCode(promo);
         }
         reservation.setNumberOfPersons(dto.numberOfPersons);
         reservation.setDuration(dto.duration);
@@ -66,5 +64,19 @@ public class ReservationService {
         return reservation;
     }
 
+    @Transactional
+    public Reservation getReservation(Integer id, Authentication auth) throws NotFoundException {
+        var tmp = reservationDao.find(id);
+        var user = userDao.getCustomerByUsername(auth.getName());
+        if (tmp == null) {
+            throw new NotFoundException("Reservation not found");
+        }
+        if (user.getUserDetails().getRole() == UserRole.USER) {
+            if (!tmp.getAppUser().getId().equals(user.getId())) {
+                throw new NotFoundException("Reservation not found");
+            }
+        }
+        return tmp;
+    }
 
 }

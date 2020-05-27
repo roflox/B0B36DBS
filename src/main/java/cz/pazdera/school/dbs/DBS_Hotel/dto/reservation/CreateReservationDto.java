@@ -1,10 +1,8 @@
 package cz.pazdera.school.dbs.DBS_Hotel.dto.reservation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class CreateReservationDto {
@@ -12,7 +10,6 @@ public class CreateReservationDto {
     @NotNull
     @Min(1)
     public Integer roomNumber;
-    @Min(1)
     @NotNull
     public String promoCode;
     @Min(1)
@@ -20,11 +17,12 @@ public class CreateReservationDto {
     public Integer duration;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @NotBlank
     @NotNull
+    @FutureOrPresent
     public LocalDate startDate;
 
     @Min(1)
+    @NotNull
     public Integer numberOfPersons;
 
     @Override

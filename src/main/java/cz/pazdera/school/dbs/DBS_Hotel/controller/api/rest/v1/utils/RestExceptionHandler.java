@@ -1,5 +1,6 @@
 package cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils;
 
+import cz.pazdera.school.dbs.DBS_Hotel.controller.api.rest.v1.utils.exception.CustomValidationException;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,6 +17,7 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.UnexpectedTypeException;
 
 
 @ControllerAdvice
@@ -48,7 +51,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<ErrorInfo> nullPointer(HttpServletRequest request, NullPointerException e) {
-//        logException(e);
+        logException(e);
         return new ResponseEntity<>(errorInfo(request, e), HttpStatus.BAD_REQUEST);
     }
 
@@ -67,6 +70,17 @@ public class RestExceptionHandler {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<ErrorInfo> entityExists(HttpServletRequest request, EntityExistsException e){
         return new ResponseEntity<>(errorInfo(request,e),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorInfo> validationError(HttpServletRequest request, MethodArgumentNotValidException e){
+        return new ResponseEntity<>(errorInfo(request,new CustomValidationException(e)),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    public ResponseEntity<ErrorInfo> unexpectedType(HttpServletRequest request, UnexpectedTypeException e){
+        e.printStackTrace();
+        return new ResponseEntity<>(errorInfo(request,"unexpectedType"),HttpStatus.BAD_REQUEST);
     }
 
 }
@@ -107,3 +121,4 @@ class ErrorInfo {
         return "ErrorInfo{" + requestUri + ", message = " + message + "}";
     }
 }
+

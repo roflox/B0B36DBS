@@ -1,10 +1,14 @@
 package cz.pazdera.school.dbs.DBS_Hotel.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Entity
@@ -39,6 +43,17 @@ public class Reservation extends AbstractModel {
     @Column()
     private String feedback;
 
+
+    @JsonAlias("price")
+    public BigDecimal getPrice(){
+        var price = this.room.getPrice();
+        if(this.promoCode!=null){
+            var discount = ((double) (100-this.promoCode.getDiscount())/100);
+            price = price.multiply(new BigDecimal(discount));
+            price = price.setScale(2,RoundingMode.DOWN);
+        }
+        return price;
+    }
 
     @Column(columnDefinition = "BOOL not null default false")
     private boolean paid;

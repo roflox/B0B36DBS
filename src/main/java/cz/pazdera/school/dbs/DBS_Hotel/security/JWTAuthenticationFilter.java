@@ -2,7 +2,7 @@ package cz.pazdera.school.dbs.DBS_Hotel.security;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.pazdera.school.dbs.DBS_Hotel.dto.auth.LoginDto;
+import cz.pazdera.school.dbs.DBS_Hotel.dto.user.LoginDto;
 import cz.pazdera.school.dbs.DBS_Hotel.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
